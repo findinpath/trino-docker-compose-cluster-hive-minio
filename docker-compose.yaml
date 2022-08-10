@@ -1,0 +1,48 @@
+version: "3.9"
+   
+services:
+  trino-coordinator:
+    image: 'trinodb/trino:380'
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./trino/coordinator/etc:/etc/trino:ro
+    networks:
+      - trino-network
+
+  trino-worker:
+    image: 'trinodb/trino:380'
+    volumes:
+      - ./trino/worker/etc:/etc/trino:ro
+    networks:
+      - trino-network
+
+  hadoop-master:
+    image: 'ghcr.io/trinodb/testing/hdp3.1-hive:53'
+    hostname: hadoop-master
+    ports:
+      - '3306:3306' # Metastore MySQL Database
+      - '9083:9083' # Metastore Thrift
+      - '10000:10000' # HiveServer2
+    volumes:
+      - ./hadoop/conf/core-site.xml:/etc/hadoop/conf/core-site.xml:ro
+    networks:
+      - trino-network
+
+  minio:
+    image: 'minio/minio:latest'
+    hostname: minio
+    container_name: minio
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      MINIO_ACCESS_KEY: minio-access-key
+      MINIO_SECRET_KEY: minio-secret-key
+    command: server --console-address ":9001" /data
+    networks:
+      - trino-network
+
+networks:
+  trino-network:
+    driver: bridge            
