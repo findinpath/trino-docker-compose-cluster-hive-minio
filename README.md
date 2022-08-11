@@ -3,10 +3,11 @@ Trino cluster with `docker-compose` on top of MinIO
 
 This project can be used to setup a [Trino](https://trino.io/) cluster with `docker-compose`.
 
-The Trino cluster makes use of the [tpch](https://trino.io/docs/current/connector/tpch.html)
-catalog for benchmarking the performance of the cluster computations.
+The Trino cluster makes use of the [hive](https://trino.io/docs/current/connector/hive.html)
+catalog for doing data processing on top of [MinIO](https://min.io/) object storage.
 
 ## Cluster setup
+
 Setting up initially the cluster (composed of a coordinator and a worker) can be done through the command:
 
 ```bash
